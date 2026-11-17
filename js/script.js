@@ -1,4 +1,4 @@
-import { fetchRates, API_REQUEST } from './api.js'
+import { fetchRates, API_REQUEST, manageApiStatusAlert } from './api.js'
 const initCurencyApp = async () => {
   const amountInput = document.querySelector('#amount-input')
   const fromCurrency = document.querySelector('#from-currency')
@@ -13,8 +13,16 @@ const initCurencyApp = async () => {
     console.log('Check the api confiuration')
     return
   }
+
   console.log(exchangeRateAvailable)
+  const apiStatus = (await manageApiStatusAlert(exchangeRateAvailable))
+    ? 'Active'
+    : 'Pending'
+  console.log(apiStatus)
 }
+
+const calculateExchangeRates = () => {}
+const displayExchageRates = () => {}
 
 window.addEventListener('load', () => {
   initCurencyApp()
