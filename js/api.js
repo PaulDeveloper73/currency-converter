@@ -22,6 +22,7 @@ export const manageApiStatusAlert = async apiData => {
   const lastUpdated = document.querySelector('#last-updated')
   const nextUpdate = document.querySelector('#next-update')
   const totalCurrencies = document.querySelector('#total-currencies')
+  const rateDataStatus = document.querySelector('#rate-data-status')
 
   let alertMsg = ''
   const data = apiData.conversion_rates // text try to access the exchange rates object
@@ -35,12 +36,13 @@ export const manageApiStatusAlert = async apiData => {
     apiStatusBadge.classList.add('text-green-600')
     apiStatusBadge.classList.remove('text-amber-600')
     apiStatusBadge.textContent = 'Active'
+    rateDataStatus.textContent = 'Rate data active'
     // apiAlertTxt.classList.add('text-green-600').remove('text-amber-600')
     return true
   } catch (err) {
     alertMsg = 'Waiting for Api connection...'
     apiStatusBadge.textContent = 'Pending'
-
+    rateDataStatus.textContent = 'Rate data pending'
     apiAlertTxt.classList.remove('text-green-600')
     apiAlertTxt.classList.add('text-amber-600')
     apiStatusBadge.classList.remove('text-green-600')
@@ -63,7 +65,7 @@ const getLastUpdate = dateDetails => {
   const day = String(date.getDate() ?? '')
     .trim()
     .padStart(2, '0')
-  const month = String(date.getMonth() ?? '')
+  const month = String(date.getMonth() + 1 ?? '')
     .trim()
     .padStart(2, '0')
   const year = String(date.getFullYear() ?? '')
