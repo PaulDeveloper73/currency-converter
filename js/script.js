@@ -27,7 +27,7 @@ const displayAllCurrencies = apiData => {
 
   const data = apiData.conversion_rates // text try to access the exchange rates object
   const currencyList = Object.entries(data)
-  const updatedList = currencyList.map(item => {
+  return currencyList.map(item => {
     const currencyCode = item.slice(0, 1)
     const currencyRate = item.slice(1)
     const currDiv = document.createElement('div')

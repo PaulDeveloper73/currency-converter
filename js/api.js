@@ -53,7 +53,7 @@ export const manageApiStatusAlert = async apiData => {
     apiStatus.textContent = alertMsg
     lastUpdated.textContent = getLastUpdate(apiData.time_last_update_utc)
     nextUpdate.textContent = getLastUpdate(apiData.time_next_update_utc)
-    totalCurrencies.textContent = Object.entries(data).length
+    totalCurrencies.textContent = Object.entries(data).length + ' available '
     console.log(alertMsg)
   }
 }
