@@ -1,5 +1,6 @@
 import { fetchRates, API_REQUEST, manageApiStatusAlert } from './api.js'
 const initCurencyApp = async () => {
+  const currencyForm = document.querySelector('#currency-form')
   const amountInput = document.querySelector('#amount-input')
   const fromCurrency = document.querySelector('#from-currency')
   const toCurrency = document.querySelector('#to-currency')
@@ -21,12 +22,38 @@ const initCurencyApp = async () => {
   console.log(apiStatus)
   displayAllCurrencies(exchangeRateAvailable)
   popularCurrencyPairs(exchangeRateAvailable)
+
+  // currency for data
+  currencyForm.addEventListener('submit', e => {
+    e.preventDefault()
+    const getCurrentData = processFormData(currencyForm)
+    console.log(getCurrentData)
+
+    // validate amount
+    if (
+      !Number.isFinite(getCurrentData.inputAmount) ||
+      getCurrentData.inputAmount < 0
+    ) {
+      console.log('Enter amount zero(0) and above.')
+      return
+    }
+  })
+}
+const processFormData = data => {
+  const form = new FormData(data)
+  const amount = String(form.get('amount') ?? '').trim()
+  const fromCurr = String(form.get('fromCurrency') ?? '').trim()
+  const toCurr = String(form.get('toCurrency') ?? '').trim()
+  return {
+    inputAmount: Number(amount),
+    fromCurrency: fromCurr,
+    toCurrency: toCurr
+  }
 }
 const popularCurrencyPairs = apiData => {
   const listArea = document.querySelector('#popular-currency-pairs')
   const data = apiData.conversion_rates
   const allData = Object.entries(data)
-  console.log(allData)
   const filteredCurrency = allData.filter(
     item =>
       item.includes('UGX') ||
@@ -34,7 +61,6 @@ const popularCurrencyPairs = apiData => {
       item.includes('TZS') ||
       item.includes('EUR')
   )
-  console.log(filteredCurrency)
   //
   // {
   //   currency: "USD",
@@ -76,19 +102,14 @@ const popularCurrencyPairs = apiData => {
     }
   })
 
-  console.log(dataSource) // all the arranged data is here
-
   listArea.replaceChildren('')
   const currencyPairElement = dataSource.map(item =>
     createCurrencyPair(item, listArea)
   )
   // listArea.append(currencyPairElement)
-  console.log(listArea)
 }
 // Create currency pair section
 const createCurrencyPair = (item, listArea) => {
-  console.log(item.currency)
-
   // Main container
   const container = document.createElement('div')
   container.className = 'flex items-center justify-between gap-3 py-4'
@@ -130,7 +151,6 @@ const createCurrencyPair = (item, listArea) => {
 
   // Append everything to main container
   container.append(leftContainer, exchangeRate)
-  console.log(container)
   listArea.append(container)
 
   return container
