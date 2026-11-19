@@ -28,6 +28,7 @@ const initCurencyApp = async () => {
     e.preventDefault()
     const getCurrentData = processFormData(currencyForm)
     console.log(getCurrentData)
+    let reverseCurrStatus = false // pending to setup to manage currency switch
 
     // validate amount
     if (
@@ -37,7 +38,72 @@ const initCurencyApp = async () => {
       console.log('Enter amount zero(0) and above.')
       return
     }
+
+    // The exhanage rates
+    const dataSource = [
+      ...Object.entries(exchangeRateAvailable.conversion_rates)
+    ]
+
+    const filteredToCurr = dataSource.find(curr =>
+      curr.includes(getCurrentData.toCurrency)
+    )
+    const filteredFromCurr = dataSource.find(curr =>
+      curr.includes(getCurrentData.fromCurrency)
+    )
+    // All the current and ther respective codes and rates are here
+
+    const allDetails = {
+      ...stripTOcurrency(filteredToCurr),
+      ...stripFromCurrency(filteredFromCurr),
+      reverseCurrStatus // pending to setup to manage currency switch
+    }
+    calculateExchangeRates(allDetails)
   })
+
+  //now real calctulation
+}
+const calculateExchangeRates = ({
+  toCurrencyCode,
+  toCurrencyRate,
+  fromCurrencyCode,
+  fromCurrencyRate,
+  reverseCurrStatus
+}) => {
+  let toCurrCode = toCurrencyCode
+  let toCurrRate = toCurrencyRate
+  let fromCurrCode = fromCurrencyCode
+  let fromCurrRate = fromCurrencyRate
+  if (reverseCurrStatus === true) {
+    toCurrCode = fromCurrencyCode
+    toCurrRate = fromCurrencyRate
+    fromCurrCode = toCurrencyCode
+    fromCurrRate = toCurrencyRate
+  }
+  //  data to use is here
+  const currData = {
+    toCurrencyCode: toCurrCode[0],
+    toCurrencyRate: toCurrRate[0],
+    fromCurrencyCode: fromCurrCode[0],
+    fromCurrencyRate: fromCurrRate[0]
+  }
+  console.log(currData)
+}
+const displayExchageRates = () => {}
+const stripTOcurrency = item => {
+  const currencyCode = item.slice(0, 1)
+  const currencyRate = item.slice(1)
+  return {
+    toCurrencyCode: currencyCode,
+    toCurrencyRate: currencyRate
+  }
+}
+const stripFromCurrency = item => {
+  const currencyCode = item.slice(0, 1)
+  const currencyRate = item.slice(1)
+  return {
+    fromCurrencyCode: currencyCode,
+    fromCurrencyRate: currencyRate
+  }
 }
 const processFormData = data => {
   const form = new FormData(data)
@@ -183,8 +249,6 @@ const displayAllCurrencies = apiData => {
     return Object.entries(data).length
   })
 }
-const calculateExchangeRates = () => {}
-const displayExchageRates = () => {}
 
 window.addEventListener('load', () => {
   initCurencyApp()

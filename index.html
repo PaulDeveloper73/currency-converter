@@ -19,14 +19,54 @@
 
     <!-- Font Configuration -->
     <style>
+      .c {
+        color: #4c3123;
+        color: #140a05;
+        color: #e1d1be;
+        /* primary Button: Background #4C3123, Text #FDD9A3, 52px height,
+144px radius.
+• Secondary Button: Background #140A05, Text #FFF9EB, Border
+1px solid #4C3123, 52px height, 144px radius.
+• Search/Input Bar: Background #E1D1BE, Border Radius 12px,
+Border 1px solid #C35A1A.
+• Service Item Cards: Background #E1D1BE, Border 1px solid
+#E1D1BE, Radius 12px. */
+      }
+      :root {
+        --brown: #4c3123;
+        --brown-deep: #140a05;
+        --brown-soft: #714633;
+        --orange: #f3ad02;
+        --orange-deep: #f2ae02b6;
+        --cream: #e1d1be;
+        --cream-2: #fff1df;
+        --peach: #e1d1be;
+        --peach-2: #e1d1be;
+        --ink: #30211b;
+        --muted: #76675e;
+        --line: #e1d1be;
+        --white: #fff;
+        --shadow: 0 14px 34px rgba(73, 39, 25, 0.07);
+        --radius: 17px;
+        --max: 1720px;
+      }
       body {
-        font-family: "Plus Jakarta Sans", sans-serif;
+        font-family: Avenir, "Plus Jakarta Sans", sans-serif;
+        /* font-family: "Plus Jakarta Sans", sans-serif; */
+        /* font-family: Avenir, Palatino, "Palatino Linotype", "Book Antiqua", sans-serif; */
       }
 
       * {
         box-sizing: border-box;
       }
-
+      @font-face {
+        font-family: "Cormorant Garamond";
+        src: url("../fonts/CormorantGaramond-VariableFont_wght.woff2")
+          format("truetype");
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
       select,
       input,
       button {
