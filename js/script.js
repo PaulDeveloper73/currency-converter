@@ -33,6 +33,7 @@ const initCurencyApp = async () => {
     // validate amount
     if (
       !Number.isFinite(getCurrentData.inputAmount) ||
+      !Number.isNaN(getCurrentData.inputAmount) ||
       getCurrentData.inputAmount < 0
     ) {
       console.log('Enter amount zero(0) and above.')
@@ -55,6 +56,7 @@ const initCurencyApp = async () => {
     const allDetails = {
       ...stripTOcurrency(filteredToCurr),
       ...stripFromCurrency(filteredFromCurr),
+      ...getCurrentData,
       reverseCurrStatus // pending to setup to manage currency switch
     }
     calculateExchangeRates(allDetails)
@@ -67,26 +69,27 @@ const calculateExchangeRates = ({
   toCurrencyRate,
   fromCurrencyCode,
   fromCurrencyRate,
-  reverseCurrStatus
+  reverseCurrStatus,
+  inputAmount
 }) => {
-  let toCurrCode = toCurrencyCode
-  let toCurrRate = toCurrencyRate
-  let fromCurrCode = fromCurrencyCode
-  let fromCurrRate = fromCurrencyRate
+  //  Data to use is here
+  let toCurrCode = toCurrencyCode[0]
+  let toCurrRate = toCurrencyRate[0]
+  let fromCurrCode = fromCurrencyCode[0]
+  let fromCurrRate = fromCurrencyRate[0]
+  // Calculate exchange rates respectively
+
   if (reverseCurrStatus === true) {
     toCurrCode = fromCurrencyCode
     toCurrRate = fromCurrencyRate
     fromCurrCode = toCurrencyCode
     fromCurrRate = toCurrencyRate
   }
-  //  data to use is here
-  const currData = {
-    toCurrencyCode: toCurrCode[0],
-    toCurrencyRate: toCurrRate[0],
-    fromCurrencyCode: fromCurrCode[0],
-    fromCurrencyRate: fromCurrRate[0]
-  }
-  console.log(currData)
+  const exhangeRateCal =
+    Number(toCurrRate) * Number(fromCurrRate) * Number(inputAmount)
+
+  console.log(`Coverted currency:${fromCurrencyCode}  to: ${toCurrencyCode}.
+               Exchange coversion is: ${exhangeRateCal.toFixed(2)}`)
 }
 const displayExchageRates = () => {}
 const stripTOcurrency = item => {
