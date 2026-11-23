@@ -4,8 +4,11 @@ const initCurencyApp = async () => {
   const amountInput = document.querySelector('#amount-input')
   const fromCurrency = document.querySelector('#from-currency')
   const toCurrency = document.querySelector('#to-currency')
-  const swapCurrencies = document.querySelector('#swap-currencies')
+  const swapCurrenciesBtn = document.querySelector('#swap-currencies')
+  const swapStatus = document.querySelector('#swap-status')
   const convertButton = document.querySelector('#convert-button')
+  const errMsg = document.querySelector('#error-message')
+  errMsg.textContent = ''
 
   //   Check is conversion rates are available
 
@@ -31,14 +34,21 @@ const initCurencyApp = async () => {
     let reverseCurrStatus = false // pending to setup to manage currency switch
 
     // validate amount
+    const amount = Number(getCurrentData.inputAmount)
+
     if (
-      !Number.isFinite(getCurrentData.inputAmount) ||
-      !Number.isNaN(getCurrentData.inputAmount) ||
-      getCurrentData.inputAmount < 0
+      amount === '' ||
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      Number.isNaN(amount)
     ) {
-      console.log('Enter amount zero(0) and above.')
+      errMsg.textContent = 'Please enter a valid amount greater than zero!'
+      errMsg.className = 'text-red-500 text-xm py-2 animate-pulse'
+      console.log('Please enter a valid amount greater than zero!')
+      amountInput.focus()
       return
     }
+    errMsg.textContent = ''
 
     // The exhanage rates
     const dataSource = [
@@ -60,10 +70,48 @@ const initCurencyApp = async () => {
       reverseCurrStatus // pending to setup to manage currency switch
     }
     calculateExchangeRates(allDetails)
+
+    console.log(allDetails)
   })
 
-  //now real calctulation
+  //Swapping currencies
+
+  swapCurrenciesBtn.addEventListener('click', () => {
+    const resultAmount = document.querySelector('#result-amount')
+    const resultCurrency = document.querySelector('#result-currency')
+    const exchangeRate = document.querySelector('#exchange-rate')
+    const originalAmount = document.querySelector('#original-amount')
+    resultAmount.textContent = ''
+    resultCurrency.textContent = ''
+    exchangeRate.textContent = ''
+    originalAmount.textContent = ''
+    amountInput.focus()
+    // Store current currency selections
+    const fromValue = fromCurrency.value
+    const toValue = toCurrency.value
+
+    // Swap selected currencies
+    fromCurrency.value = toValue
+    toCurrency.value = fromValue
+
+    // Update visible status
+    swapStatus.textContent = `Converting ${fromCurrency.value} to ${toCurrency.value}`
+
+    // Notify other application event listeners
+    fromCurrency.dispatchEvent(
+      new Event('change', {
+        bubbles: true
+      })
+    )
+
+    toCurrency.dispatchEvent(
+      new Event('change', {
+        bubbles: true
+      })
+    )
+  })
 }
+
 const calculateExchangeRates = ({
   toCurrencyCode,
   toCurrencyRate,
@@ -72,26 +120,94 @@ const calculateExchangeRates = ({
   reverseCurrStatus,
   inputAmount
 }) => {
-  //  Data to use is here
-  let toCurrCode = toCurrencyCode[0]
-  let toCurrRate = toCurrencyRate[0]
-  let fromCurrCode = fromCurrencyCode[0]
-  let fromCurrRate = fromCurrencyRate[0]
-  // Calculate exchange rates respectively
+  // Extract values (supports both strings and arrays)
+  const getValue = value => (Array.isArray(value) ? value[0] : value)
 
-  if (reverseCurrStatus === true) {
-    toCurrCode = fromCurrencyCode
-    toCurrRate = fromCurrencyRate
-    fromCurrCode = toCurrencyCode
-    fromCurrRate = toCurrencyRate
+  // Extract currency data
+  let toCurrCode = getValue(toCurrencyCode)
+  let toCurrRate = Number(getValue(toCurrencyRate))
+
+  let fromCurrCode = getValue(fromCurrencyCode)
+  let fromCurrRate = Number(getValue(fromCurrencyRate))
+
+  const amount = Number(inputAmount)
+
+  // Validate input amount
+  if (
+    String(inputAmount).trim() === '' ||
+    !Number.isFinite(amount) ||
+    amount < 0
+  ) {
+    throw new Error('Please enter a valid amount!')
   }
-  const exhangeRateCal =
-    Number(toCurrRate) * Number(fromCurrRate) * Number(inputAmount)
 
-  console.log(`Coverted currency:${fromCurrencyCode}  to: ${toCurrencyCode}.
-               Exchange coversion is: ${exhangeRateCal.toFixed(2)}`)
+  // Validate exchange rates
+  if (
+    !Number.isFinite(toCurrRate) ||
+    !Number.isFinite(fromCurrRate) ||
+    toCurrRate <= 0 ||
+    fromCurrRate <= 0
+  ) {
+    throw new Error('Invalid exchange rates!')
+  }
+
+  // Reverse currency conversion
+  if (reverseCurrStatus === true) {
+    ;[toCurrCode, fromCurrCode] = [fromCurrCode, toCurrCode]
+    ;[toCurrRate, fromCurrRate] = [fromCurrRate, toCurrRate]
+  }
+
+  // Calculate exchange rate
+  const exchangeRate = toCurrRate / fromCurrRate
+
+  // Calculate converted amount
+  const exchangeRateCal = amount * exchangeRate
+
+  // Format converted amount
+  const formattedAmount = exchangeRateCal.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+
+  console.log(
+    `Converted currency from: ${fromCurrCode} to: ${toCurrCode}.
+     Exchange conversion is ${toCurrCode} ${formattedAmount}`
+  )
+
+  const data = {
+    fromCurrencyCode: fromCurrCode,
+    toCurrencyCode: toCurrCode,
+    toCurrRate,
+    inputAmount: amount,
+    exchangeRate,
+    convertedAmount: exchangeRateCal,
+    formattedAmount
+  }
+  // display results
+  displayExchageRates(data)
+  return data
 }
-const displayExchageRates = () => {}
+
+const displayExchageRates = data => {
+  const {
+    fromCurrencyCode,
+    toCurrencyCode,
+    toCurrRate,
+    inputAmount,
+    convertedAmount,
+    formattedAmount
+  } = data
+  const resultAmount = document.querySelector('#result-amount')
+  const resultCurrency = document.querySelector('#result-currency')
+  const exchangeRate = document.querySelector('#exchange-rate')
+  const originalAmount = document.querySelector('#original-amount')
+  resultAmount.textContent = convertedAmount.toLocaleString()
+  resultCurrency.textContent = toCurrencyCode
+  exchangeRate.textContent = toCurrRate
+  originalAmount.textContent = inputAmount
+  // scroll to result section
+  scrollToElement('convert-button')
+}
 const stripTOcurrency = item => {
   const currencyCode = item.slice(0, 1)
   const currencyRate = item.slice(1)
@@ -252,6 +368,23 @@ const displayAllCurrencies = apiData => {
     return Object.entries(data).length
   })
 }
+// scroll to this id
+export const scrollToElement = elementId => {
+  const element = document.getElementById(elementId)
+
+  if (!element) {
+    console.warn(`Element #${elementId} not found.`)
+    return
+  }
+
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
+
+// Usage
+scrollToElement('exchange-results')
 
 window.addEventListener('load', () => {
   initCurencyApp()

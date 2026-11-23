@@ -292,7 +292,7 @@
                     </span>
                   </div>
 
-                  <p class="mt-2 text-xs text-slate-400">
+                  <p id="error-message" class="mt-2 text-xs text-slate-400">
                     Enter a positive amount or zero.
                   </p>
                 </div>
@@ -441,15 +441,22 @@
                 </div>
 
                 <!-- Validation Message -->
-                <div
-                  id="error-message"
+                <!-- <div
+                  id="error-message45"
                   role="alert"
                   aria-live="polite"
                   class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
                 >
                   Please enter a valid amount and select valid currencies.
-                </div>
-
+                </div> -->
+                <!-- Visible swap feedback -->
+                <p
+                  id="swap-status"
+                  class="mt-2 text-xs py-2 text-green-500 text-center"
+                  aria-live="polite"
+                >
+                  Converting USD to UGX
+                </p>
                 <!-- Convert Button -->
                 <button
                   type="submit"
@@ -473,6 +480,7 @@
                   Convert Currency
                 </button>
               </form>
+
               <!-- ================= CONVERSION RESULT ================= -->
               <div
                 id="conversion-result"
