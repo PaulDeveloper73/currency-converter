@@ -27,6 +27,7 @@ export const manageApiStatusAlert = async apiData => {
   const nextUpdate = document.querySelector('#next-update')
   const totalCurrencies = document.querySelector('#total-currencies')
   const rateDataStatus = document.querySelector('#rate-data-status')
+  const rateConStatus = document.querySelector('#rate-conv-status')
 
   let alertMsg = ''
   const data = apiData.conversion_rates // text try to access the exchange rates object
@@ -40,6 +41,7 @@ export const manageApiStatusAlert = async apiData => {
     apiStatusBadge.classList.add('text-green-600')
     apiStatusBadge.classList.remove('text-amber-600')
     apiStatusBadge.textContent = 'Active'
+    rateConStatus.textContent = 'Active'
     rateDataStatus.textContent = 'Rate data active'
     // apiAlertTxt.classList.add('text-green-600').remove('text-amber-600')
     return true
@@ -51,6 +53,8 @@ export const manageApiStatusAlert = async apiData => {
     apiAlertTxt.classList.add('text-amber-600')
     apiStatusBadge.classList.remove('text-green-600')
     apiStatusBadge.classList.add('text-amber-600')
+    rateConStatus.textContent = 'Inactive'
+
     // apiAlertTxt.classList.remove('text-green-600').add('bg-amber-500')
     console.log('Waiting for the Api rates connection...!')
     return false

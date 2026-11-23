@@ -316,10 +316,8 @@
                         name="fromCurrency"
                         class="h-16 w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-12 text-base font-bold text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                       >
-                        <option value="UGX" selected>
-                          UGX - Ugandan Shilling
-                        </option>
-                        <option value="USD">USD - US Dollar</option>
+                        <option value="UGX">UGX - Ugandan Shilling</option>
+                        <option value="USD" selected>USD - US Dollar</option>
                         <option value="EUR">EUR - Euro</option>
                         <option value="GBP">GBP - British Pound</option>
                         <option value="KES">KES - Kenyan Shilling</option>
@@ -400,8 +398,10 @@
                         name="toCurrency"
                         class="h-16 w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-12 text-base font-bold text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                       >
-                        <option value="USD" selected>USD - US Dollar</option>
-                        <option value="UGX">UGX - Ugandan Shilling</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="UGX" selected>
+                          UGX - Ugandan Shilling
+                        </option>
                         <option value="EUR">EUR - Euro</option>
                         <option value="GBP">GBP - British Pound</option>
                         <option value="KES">KES - Kenyan Shilling</option>
@@ -500,8 +500,9 @@
 
                   <span
                     class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-300"
+                    id="rate-conv-status"
                   >
-                    Indicative Rate
+                    Inactive
                   </span>
                 </div>
 
